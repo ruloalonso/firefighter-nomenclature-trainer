@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nomenclatura Bomberos</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-container">
+      <h1>Práctica de Nomenclatura</h1>
+
+      <div class="card">
+        <p>Indicación:</p>
+        <h2 id="question-text">Cargando...</h2>
+      </div>
+
+      <div class="input-group">
+        <label for="answer-input">Tu respuesta:</label>
+        <input
+          type="text"
+          id="answer-input"
+          placeholder="Escribe el código aquí..."
+        />
+      </div>
+
+      <button id="check-button">Comprobar</button>
+      <button id="next-button" class="hidden">Siguiente</button>
+
+      <p id="feedback-text"></p>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
