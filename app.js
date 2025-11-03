@@ -72,6 +72,7 @@ const answerInput = document.getElementById("answer-input");
 const checkButton = document.getElementById("check-button");
 const nextButton = document.getElementById("next-button");
 const feedbackText = document.getElementById("feedback-text");
+const speakButton = document.getElementById("speak-button");
 
 let currentCorrectAnswer = "";
 
@@ -218,6 +219,21 @@ function nextQuestion() {
   answerInput.focus();
 }
 
+function speakQuestion() {
+  const text = questionText.textContent;
+  
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'es-ES';
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    
+    window.speechSynthesis.speak(utterance);
+  }
+}
+
 // --- EVENT LISTENERS ---
 
 // Cargar la primera pregunta al iniciar
@@ -228,6 +244,9 @@ checkButton.addEventListener("click", checkAnswer);
 
 // Siguiente con el botón
 nextButton.addEventListener("click", nextQuestion);
+
+// Leer pregunta con el botón
+speakButton.addEventListener("click", speakQuestion);
 
 // Permitir usar "Enter" para comprobar
 answerInput.addEventListener("keydown", (e) => {
