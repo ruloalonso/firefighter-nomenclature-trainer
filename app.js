@@ -127,7 +127,7 @@ function getJefaturaName(jName) {
 // --- LÓGICA PRINCIPAL ---
 
 function generateQuestion() {
-  const type = Math.floor(Math.random() * 6) + 1; // Genera un tipo de 1 a 6
+  const type = Math.floor(Math.random() * 7) + 1; // Genera un tipo de 1 a 7
   let question = "";
   let answer = "";
 
@@ -198,7 +198,10 @@ function generateQuestion() {
 
       // En este caso, la jefatura puede dar C4 (intervención controlada)
       // pero el vehículo no puede hacerlo, así que la clave se asocia a la jefatura
-      cKey = getRandomKey(claves);
+      // Además, la clave C4 solo puede ser dada por una persona, no por múltiples indicativos
+      do {
+        cKey = getRandomKey(claves);
+      } while (cKey === "C4");
       
       // Usar la versión plural de la clave ya que hay dos indicativos
       cName = clavesPlural[cKey];
@@ -234,25 +237,10 @@ function generateQuestion() {
       }
       
       // Usar una de las claves existentes como situación común
-      cKey = getRandomKey(claves);
-      
-      // Si la clave es C4 (intervención controlada) y no hay jefaturas entre los indicativos,
-      // elegir otra clave, ya que solo las jefaturas pueden dar intervención controlada
-      if (cKey === "C4") {
-        let hayJefatura = false;
-        for (let i = 0; i < indicativos.length; i++) {
-          if (respuestas[i].startsWith("J")) {
-            hayJefatura = true;
-            break;
-          }
-        }
-        
-        if (!hayJefatura) {
-          do {
-            cKey = getRandomKey(claves);
-          } while (cKey === "C4");
-        }
-      }
+      // La clave C4 (intervención controlada) solo puede ser dada por una persona, no por múltiples indicativos
+      do {
+        cKey = getRandomKey(claves);
+      } while (cKey === "C4");
       
       // Usar la versión plural de la clave cuando hay más de un indicativo
       cName = clavesPlural[cKey];
@@ -267,6 +255,19 @@ function generateQuestion() {
         question = `${indicativos.join(", ")} y ${ultimoIndicativo} ${cName}`;
         answer = `${respuestas.join(", ")} y ${ultimaRespuesta} en ${cKey}`;
       }
+      break;
+      
+    case 7: // Caso especial: Solo una jefatura puede dar intervención controlada (C4)
+      // Seleccionar una jefatura aleatoria
+      jKey = getRandomKey(jefaturas);
+      jName = getJefaturaName(jefaturas[jKey]);
+      
+      // Usar específicamente la clave C4 (intervención controlada)
+      cKey = "C4";
+      cName = claves[cKey];
+      
+      question = `${jName} ${cName}`;
+      answer = `${jKey} en ${cKey}`;
       break;
   }
 
