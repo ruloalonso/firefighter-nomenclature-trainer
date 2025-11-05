@@ -94,13 +94,27 @@ function getRandomKey(obj) {
   return keys[Math.floor(Math.random() * keys.length)];
 }
 
+// Función específica para generar combinaciones con PIR
+function getPIRCombination() {
+  // Solo seleccionar entre Arganda (23) y Tres Cantos (12)
+  const pirParques = ["23", "12"];
+  const pKey = pirParques[Math.floor(Math.random() * pirParques.length)];
+  const pName = getParqueName(parques[pKey]);
+  
+  // Usar específicamente el PIR
+  const vKey = ".15";
+  const vName = "PIR";
+  
+  return { pKey, pName, vKey, vName };
+}
+
 // Devuelve el nombre del parque, usando el apodo a veces
 function getParqueName(parque) {
   return parque.nick && Math.random() > 0.4 ? parque.nick : parque.name;
 }
 
 // Devuelve el nombre del vehículo, con lógica especial
-function getVehiculoName(vKey, vName) {
+function getVehiculoName(vKey, vName, parqueKey) {
   if (vKey === ".11") return "Bomba Rural Pesada";
   if (vKey === ".12") return "Segunda Bomba Rural Pesada";
   if (vKey === ".32")
@@ -108,7 +122,15 @@ function getVehiculoName(vKey, vName) {
   if (vKey === ".31") return "FSV";
   if (vKey === ".35") return "FRA";
   if (vKey === ".25") return "PIF";
-  if (vKey === ".15") return "PIR";
+  // PIR solo existe en Arganda (23) y Tres Cantos (12)
+  if (vKey === ".15") {
+    if (parqueKey === "23" || parqueKey === "12") {
+      return "PIR";
+    } else {
+      // Si no es uno de esos parques, devolver otro vehículo
+      return getVehiculoName(".11", vehiculos[".11"], parqueKey);
+    }
+  }
   if (vKey === ".38") return "FER";
   if (vKey === ".36") return "RBQ";
   if (vKey === ".40") return "BUS";
@@ -127,6 +149,9 @@ function getJefaturaName(jName) {
 // --- LÓGICA PRINCIPAL ---
 
 function generateQuestion() {
+  // 15% de probabilidad de generar una combinación con PIR
+  const usePIR = Math.random() < 0.15;
+  
   const type = Math.floor(Math.random() * 7) + 1; // Genera un tipo de 1 a 7
   let question = "";
   let answer = "";
@@ -143,10 +168,20 @@ function generateQuestion() {
 
   switch (type) {
     case 1: // Parque + Vehículo
-      pKey = getRandomKey(parques);
-      pName = getParqueName(parques[pKey]);
-      vKey = getRandomKey(vehiculos);
-      vName = getVehiculoName(vKey, vehiculos[vKey]);
+      if (usePIR) {
+        // Usar la combinación específica con PIR
+        const pirCombination = getPIRCombination();
+        pKey = pirCombination.pKey;
+        pName = pirCombination.pName;
+        vKey = pirCombination.vKey;
+        vName = pirCombination.vName;
+      } else {
+        // Generación normal
+        pKey = getRandomKey(parques);
+        pName = getParqueName(parques[pKey]);
+        vKey = getRandomKey(vehiculos);
+        vName = getVehiculoName(vKey, vehiculos[vKey], pKey);
+      }
 
       question = `${vName} de ${pName}`;
       answer = `${pKey}${vKey}`;
@@ -161,10 +196,20 @@ function generateQuestion() {
       break;
 
     case 3: // Parque + Vehículo + Clave (excepto C4 que es solo para jefaturas)
-      pKey = getRandomKey(parques);
-      pName = getParqueName(parques[pKey]);
-      vKey = getRandomKey(vehiculos);
-      vName = getVehiculoName(vKey, vehiculos[vKey]);
+      if (usePIR) {
+        // Usar la combinación específica con PIR
+        const pirCombination = getPIRCombination();
+        pKey = pirCombination.pKey;
+        pName = pirCombination.pName;
+        vKey = pirCombination.vKey;
+        vName = pirCombination.vName;
+      } else {
+        // Generación normal
+        pKey = getRandomKey(parques);
+        pName = getParqueName(parques[pKey]);
+        vKey = getRandomKey(vehiculos);
+        vName = getVehiculoName(vKey, vehiculos[vKey], pKey);
+      }
       
       // Excluir C4 para vehículos (solo jefaturas pueden dar intervención controlada)
       do {
@@ -191,10 +236,20 @@ function generateQuestion() {
       jKey = getRandomKey(jefaturas);
       jName = getJefaturaName(jefaturas[jKey]);
 
-      pKey = getRandomKey(parques);
-      pName = getParqueName(parques[pKey]);
-      vKey = getRandomKey(vehiculos);
-      vName = getVehiculoName(vKey, vehiculos[vKey]);
+      if (usePIR) {
+        // Usar la combinación específica con PIR
+        const pirCombination = getPIRCombination();
+        pKey = pirCombination.pKey;
+        pName = pirCombination.pName;
+        vKey = pirCombination.vKey;
+        vName = pirCombination.vName;
+      } else {
+        // Generación normal
+        pKey = getRandomKey(parques);
+        pName = getParqueName(parques[pKey]);
+        vKey = getRandomKey(vehiculos);
+        vName = getVehiculoName(vKey, vehiculos[vKey], pKey);
+      }
 
       // En este caso, la jefatura puede dar C4 (intervención controlada)
       // pero el vehículo no puede hacerlo, así que la clave se asocia a la jefatura
@@ -227,10 +282,19 @@ function generateQuestion() {
           indicativos.push(jName);
           respuestas.push(jKey);
         } else {
-          pKey = getRandomKey(parques);
-          pName = getParqueName(parques[pKey]);
-          vKey = getRandomKey(vehiculos);
-          vName = getVehiculoName(vKey, vehiculos[vKey]);
+          // Si usePIR es true y es el primer vehículo, usar PIR
+          if (usePIR && i === 0) {
+            const pirCombination = getPIRCombination();
+            pKey = pirCombination.pKey;
+            pName = pirCombination.pName;
+            vKey = pirCombination.vKey;
+            vName = pirCombination.vName;
+          } else {
+            pKey = getRandomKey(parques);
+            pName = getParqueName(parques[pKey]);
+            vKey = getRandomKey(vehiculos);
+            vName = getVehiculoName(vKey, vehiculos[vKey], pKey);
+          }
           indicativos.push(`${vName} de ${pName}`);
           respuestas.push(`${pKey}${vKey}`);
         }
