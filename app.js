@@ -71,6 +71,7 @@ const questionText = document.getElementById("question-text");
 const answerInput = document.getElementById("answer-input");
 const checkButton = document.getElementById("check-button");
 const nextButton = document.getElementById("next-button");
+const newQuestionButton = document.getElementById("new-question-button");
 const feedbackText = document.getElementById("feedback-text");
 const speakButton = document.getElementById("speak-button");
 
@@ -102,7 +103,6 @@ function getVehiculoName(vKey, vName) {
   if (vKey === ".36") return "RBQ";
   if (vKey === ".40") return "BUS";
   return vName;
-  º;
 }
 
 // Devuelve el nombre de la jefatura, eligiendo uno si hay '/'
@@ -150,12 +150,17 @@ function generateQuestion() {
       answer = jKey;
       break;
 
-    case 3: // Parque + Vehículo + Clave
+    case 3: // Parque + Vehículo + Clave (excepto C4 que es solo para jefaturas)
       pKey = getRandomKey(parques);
       pName = getParqueName(parques[pKey]);
       vKey = getRandomKey(vehiculos);
       vName = getVehiculoName(vKey, vehiculos[vKey]);
-      cKey = getRandomKey(claves);
+      
+      // Excluir C4 para vehículos (solo jefaturas pueden dar intervención controlada)
+      do {
+        cKey = getRandomKey(claves);
+      } while (cKey === "C4");
+      
       cName = claves[cKey];
 
       question = `${vName} de ${pName} ${cName}`;
@@ -181,6 +186,8 @@ function generateQuestion() {
       vKey = getRandomKey(vehiculos);
       vName = getVehiculoName(vKey, vehiculos[vKey]);
 
+      // En este caso, la jefatura puede dar C4 (intervención controlada)
+      // pero el vehículo no puede hacerlo, así que la clave se asocia a la jefatura
       cKey = getRandomKey(claves);
       cName = claves[cKey];
 
@@ -247,6 +254,9 @@ nextButton.addEventListener("click", nextQuestion);
 
 // Leer pregunta con el botón
 speakButton.addEventListener("click", speakQuestion);
+
+// Nueva indicación con el botón
+newQuestionButton.addEventListener("click", nextQuestion);
 
 // Permitir usar "Enter" para comprobar
 answerInput.addEventListener("keydown", (e) => {

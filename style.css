@@ -140,6 +140,15 @@ button:hover {
     background-color: #7f8c8d;
 }
 
+#new-question-button {
+    background-color: #16a085;
+    margin-top: 0.5rem;
+}
+
+#new-question-button:hover {
+    background-color: #1abc9c;
+}
+
 .hidden {
     display: none;
 }
