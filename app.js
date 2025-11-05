@@ -86,8 +86,11 @@ const feedbackText = document.getElementById("feedback-text");
 const speakButton = document.getElementById("speak-button");
 const toggleTextButton = document.getElementById("toggle-text-button");
 const card = document.querySelector(".card");
+const voiceSpeedSlider = document.getElementById("voice-speed");
+const speedValueDisplay = document.getElementById("speed-value");
 
 let currentCorrectAnswer = "";
+let voiceSpeed = 0.9; // Velocidad de voz predeterminada
 
 // --- FUNCIONES AUXILIARES ---
 
@@ -380,7 +383,7 @@ function speakQuestion() {
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'es-ES';
-    utterance.rate = 0.9;
+    utterance.rate = voiceSpeed; // Usar la velocidad configurada
     utterance.pitch = 1;
     
     window.speechSynthesis.speak(utterance);
@@ -422,6 +425,15 @@ newQuestionButton.addEventListener("click", nextQuestion);
 
 // Mostrar/ocultar texto con el botón
 toggleTextButton.addEventListener("click", toggleTextVisibility);
+
+// Controlar la velocidad de la voz con el slider
+voiceSpeedSlider.addEventListener("input", function() {
+  // Actualizar la variable de velocidad
+  voiceSpeed = parseFloat(this.value);
+  
+  // Actualizar el texto que muestra la velocidad actual
+  speedValueDisplay.textContent = `${voiceSpeed.toFixed(1)}x`;
+});
 
 // Permitir usar "Enter" para comprobar
 answerInput.addEventListener("keydown", (e) => {

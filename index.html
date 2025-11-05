@@ -38,6 +38,23 @@
       <button id="next-button" class="hidden">Siguiente</button>
       <button id="new-question-button">Nueva indicación</button>
 
+      <div class="voice-controls">
+        <label for="voice-speed">Velocidad de voz:</label>
+        <div class="slider-container">
+          <span>0.5x</span>
+          <input 
+            type="range" 
+            id="voice-speed" 
+            min="0.5" 
+            max="2" 
+            step="0.1" 
+            value="0.9"
+          />
+          <span>2x</span>
+        </div>
+        <span id="speed-value">0.9x</span>
+      </div>
+
       <p id="feedback-text"></p>
     </main>
 
