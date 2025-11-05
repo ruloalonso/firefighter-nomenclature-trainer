@@ -48,9 +48,41 @@ h1 {
     margin-bottom: 1.5rem;
 }
 
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
 .card p {
     font-size: 0.9rem;
     font-weight: 500;
+}
+
+.toggle-button {
+    width: auto;
+    min-width: 40px;
+    height: 40px;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background-color: #2c3e50;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.toggle-button:hover {
+    background-color: #1a252f;
+    transform: scale(1.05);
+}
+
+.toggle-button:active {
+    transform: scale(0.95);
+}
+
+.text-hidden #question-text {
+    filter: blur(8px);
+    user-select: none;
 }
 
 .question-container {

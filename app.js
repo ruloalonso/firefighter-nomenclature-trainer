@@ -84,6 +84,8 @@ const nextButton = document.getElementById("next-button");
 const newQuestionButton = document.getElementById("new-question-button");
 const feedbackText = document.getElementById("feedback-text");
 const speakButton = document.getElementById("speak-button");
+const toggleTextButton = document.getElementById("toggle-text-button");
+const card = document.querySelector(".card");
 
 let currentCorrectAnswer = "";
 
@@ -363,6 +365,11 @@ function checkAnswer() {
 function nextQuestion() {
   generateQuestion();
   answerInput.focus();
+  
+  // Si el texto está oculto, reproducir el audio automáticamente
+  if (card.classList.contains('text-hidden')) {
+    speakQuestion();
+  }
 }
 
 function speakQuestion() {
@@ -377,6 +384,22 @@ function speakQuestion() {
     utterance.pitch = 1;
     
     window.speechSynthesis.speak(utterance);
+  }
+}
+
+function toggleTextVisibility() {
+  // Alternar la clase text-hidden en la tarjeta
+  card.classList.toggle('text-hidden');
+  
+  // Cambiar el icono del botón según el estado
+  if (card.classList.contains('text-hidden')) {
+    toggleTextButton.textContent = '👁️‍🗨'; // Ojo tachado
+    toggleTextButton.title = "Mostrar texto";
+    // Reproducir el audio automáticamente cuando se oculta el texto
+    speakQuestion();
+  } else {
+    toggleTextButton.textContent = '👁️'; // Ojo normal
+    toggleTextButton.title = "Ocultar texto";
   }
 }
 
@@ -396,6 +419,9 @@ speakButton.addEventListener("click", speakQuestion);
 
 // Nueva indicación con el botón
 newQuestionButton.addEventListener("click", nextQuestion);
+
+// Mostrar/ocultar texto con el botón
+toggleTextButton.addEventListener("click", toggleTextVisibility);
 
 // Permitir usar "Enter" para comprobar
 answerInput.addEventListener("keydown", (e) => {
