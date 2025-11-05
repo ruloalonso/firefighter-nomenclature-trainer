@@ -65,6 +65,16 @@ const claves = {
   C6: "ha llegado a parque",
 };
 
+// Versiones plurales de las claves para cuando hay más de un indicativo
+const clavesPlural = {
+  C0: "están inoperativos",
+  C2: "salen a intervención",
+  C3: "han llegado a la intervención",
+  C4: "dan intervención controlada",
+  C5: "se van del siniestro",
+  C6: "han llegado a parque",
+};
+
 // --- REFERENCIAS AL DOM ---
 
 const questionText = document.getElementById("question-text");
@@ -189,7 +199,9 @@ function generateQuestion() {
       // En este caso, la jefatura puede dar C4 (intervención controlada)
       // pero el vehículo no puede hacerlo, así que la clave se asocia a la jefatura
       cKey = getRandomKey(claves);
-      cName = claves[cKey];
+      
+      // Usar la versión plural de la clave ya que hay dos indicativos
+      cName = clavesPlural[cKey];
 
       question = `${jName} y ${vName} de ${pName} ${cName}`;
       answer = `${jKey} y ${pKey}${vKey} en ${cKey}`;
@@ -242,7 +254,8 @@ function generateQuestion() {
         }
       }
       
-      cName = claves[cKey];
+      // Usar la versión plural de la clave cuando hay más de un indicativo
+      cName = clavesPlural[cKey];
       
       // Formatear la pregunta y respuesta
       if (numIndicativos === 2) {
