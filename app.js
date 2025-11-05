@@ -117,7 +117,7 @@ function getJefaturaName(jName) {
 // --- LÓGICA PRINCIPAL ---
 
 function generateQuestion() {
-  const type = Math.floor(Math.random() * 5) + 1; // Genera un tipo de 1 a 5
+  const type = Math.floor(Math.random() * 6) + 1; // Genera un tipo de 1 a 6
   let question = "";
   let answer = "";
 
@@ -193,6 +193,67 @@ function generateQuestion() {
 
       question = `${jName} y ${vName} de ${pName} ${cName}`;
       answer = `${jKey} y ${pKey}${vKey} en ${cKey}`;
+      break;
+      
+    case 6: // Múltiples indicativos (hasta 4)
+      // Determinar cuántos indicativos (entre 2 y 4)
+      const numIndicativos = Math.floor(Math.random() * 3) + 2; // 2, 3 o 4 indicativos
+      let indicativos = [];
+      let respuestas = [];
+      
+      // Generar cada indicativo
+      for (let i = 0; i < numIndicativos; i++) {
+        // Decidir si es una jefatura o un vehículo
+        const isJefatura = Math.random() > 0.7; // 30% probabilidad de jefatura
+        
+        if (isJefatura) {
+          jKey = getRandomKey(jefaturas);
+          jName = getJefaturaName(jefaturas[jKey]);
+          indicativos.push(jName);
+          respuestas.push(jKey);
+        } else {
+          pKey = getRandomKey(parques);
+          pName = getParqueName(parques[pKey]);
+          vKey = getRandomKey(vehiculos);
+          vName = getVehiculoName(vKey, vehiculos[vKey]);
+          indicativos.push(`${vName} de ${pName}`);
+          respuestas.push(`${pKey}${vKey}`);
+        }
+      }
+      
+      // Usar una de las claves existentes como situación común
+      cKey = getRandomKey(claves);
+      
+      // Si la clave es C4 (intervención controlada) y no hay jefaturas entre los indicativos,
+      // elegir otra clave, ya que solo las jefaturas pueden dar intervención controlada
+      if (cKey === "C4") {
+        let hayJefatura = false;
+        for (let i = 0; i < indicativos.length; i++) {
+          if (respuestas[i].startsWith("J")) {
+            hayJefatura = true;
+            break;
+          }
+        }
+        
+        if (!hayJefatura) {
+          do {
+            cKey = getRandomKey(claves);
+          } while (cKey === "C4");
+        }
+      }
+      
+      cName = claves[cKey];
+      
+      // Formatear la pregunta y respuesta
+      if (numIndicativos === 2) {
+        question = `${indicativos[0]} y ${indicativos[1]} ${cName}`;
+        answer = `${respuestas[0]} y ${respuestas[1]} en ${cKey}`;
+      } else {
+        let ultimoIndicativo = indicativos.pop();
+        let ultimaRespuesta = respuestas.pop();
+        question = `${indicativos.join(", ")} y ${ultimoIndicativo} ${cName}`;
+        answer = `${respuestas.join(", ")} y ${ultimaRespuesta} en ${cKey}`;
+      }
       break;
   }
 
